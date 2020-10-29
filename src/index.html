@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8" />
+  <script type='text/javascript'>
+    var coords = [];
+
+    var map;
+
+
+    function GetMap() {
+      map = new Microsoft.Maps.Map('#myMap', {
+        allowHidingLabelsOfRoad: true,
+        disableStreetside: true,
+        maxZoom: 5,
+        showDashboard: false,
+        showTermsLink: false
+      });
+
+      mapMethods(Microsoft, map).setView();
+      mapMethods(Microsoft, map).savePixelCoordinate();
+      var arr = [[56.65436416004402, 12.683554687499928],
+        [56.8951534985255, 16.374960937499928],
+        [55.1518303630168, 14.529257812499928],
+        [55.42709092699827, 12.551718749999928],
+        [57.086674402117225, 12.244101562499928],
+      ];
+      mapMethods(Microsoft, map).createPolygonShape(arr);
+      //mapMethods(Microsoft, map).setZoomPrevention(10);
+
+      //Create an infobox at the center of the map but don't show it.
+      /*infobox = new Microsoft.Maps.Infobox(new Microsoft.Maps.Location(56.65436416004402, 12.683554687499928), {
+        visible: false
+      });*/
+//Create an infobox at the center of the map but don't show it.
+      infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+        visible: false
+      });
+
+      //Assign the infobox to a map instance.
+      infobox.setMap(map);
+
+      //Create random locations in the map bounds.
+
+      createPin([56.65436416004402, 12.683554687499928], 'test', 'beskrivelse');
+      createPin([55.65436416004402, 12.683554687499928], 'test2', 'beskrivelse2');
+      function createPin(coordinate, title, text) {
+        let location = new Microsoft.Maps.Location(coordinate[0], coordinate[1]);
+        var pin = new Microsoft.Maps.Pushpin(location);
+
+        pin.metadata = {};
+        if (title) {
+          pin.metadata.title = title;
+        }
+        if (text) {
+          pin.metadata.description = text;
+        }
+
+        if (title || text) {
+          Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+        }
+
+        map.entities.push(pin);
+
+      }
+/*
+      for (var i = 0; i < randomLocations.length; i++) {
+        var pin = new Microsoft.Maps.Pushpin(randomLocations[i]);
+
+        //Store some metadata with the pushpin.
+        pin.metadata = {
+          title: 'Pin ' + i,
+          description: 'Discription for pin' + i
+        };
+
+        //Add a click event handler to the pushpin.
+        Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+
+        //Add pushpin to the map.
+        map.entities.push(pin);
+      }
+*/
+
+    }
+
+
+    function mapMethods(Microsoft, map) {
+
+      function savePixelCoordinate() {
+        Microsoft.Maps.Events.addHandler(map, 'click', pixelClickEvent);
+      }
+
+      function pixelClickEvent(e) {
+        console.log('click eve');
+        if (e.targetType == "map") {
+          var point = new Microsoft.Maps.Point(e.getX(), e.getY());
+          var loc = e.target.tryPixelToLocation(point);
+          //coords += 'new Microsoft.Maps.Location(' + loc.latitude
+          //        + ", " + loc.longitude + '),' + "\n";
+          coords += '[' + loc.latitude
+                  + ", " + loc.longitude + '],' + "\n";
+
+          document.getElementById("textBox").value = coords;
+        }
+      }
+
+
+      function setView() {
+        map.setView({
+          //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+          center: new Microsoft.Maps.Location(55.55157899886038, 10.837851562499928),
+          zoom: 10,
+          labelOverlay: Microsoft.Maps.LabelOverlay.hidden
+        });
+      }
+
+      function createPolygonShape(coordinates) {
+        let shape = [];
+        for (coordinate of coordinates) {
+          shape.push(new Microsoft.Maps.Location(coordinate[0], coordinate[1]));
+
+        }
+        var polygon = new Microsoft.Maps.Polygon(shape, {
+          fillColor: 'rgba(0, 255, 0, 0.5)',
+          strokeColor: 'red',
+          strokeThickness: 2
+        });
+
+        //Add the polygon to map
+        map.entities.push(polygon);
+        console.log(shape);
+
+      }
+
+      //Define a custom overlay class that inherts from the CustomOverlay class.
+      PanningOverlay.prototype = new Microsoft.Maps.CustomOverlay({ beneathLabels : false });
+
+      //Define a constructor for the custom overlay class.
+      function PanningOverlay() {
+        this.panUpBtn = document.createElement('input');
+        this.panUpBtn.type = 'button';
+        this.panUpBtn.value = 'Enable/disable';
+        this.panUpBtn.onclick = function () {
+          polygon2.setOptions({visible: false});
+        };
+      }
+
+      //Implement the onAdd method to set up DOM elements, and use setHtmlElement to bind it with the overlay.
+      PanningOverlay.prototype.onAdd = function () {
+        //Create a div that will hold pan buttons.
+        var container = document.createElement('div');
+        container.appendChild(this.panUpBtn);
+
+        container.style.position = 'absolute';
+        container.style.top = '10px';
+        container.style.left = '10px';
+        this.setHtmlElement(container);
+      };
+
+      //Implement the new custom overlay class.
+      var overlay = new PanningOverlay();
+
+      //Add the custom overlay to the map.
+      map.layers.insert(overlay);
+
+
+      return {
+        setView: setView,
+        savePixelCoordinate: savePixelCoordinate,
+        createPolygonShape: createPolygonShape
+      }
+    }
+
+
+
+
+
+
+    function panMap(dir) {
+      var dx = 0, dy = 0;
+      switch (dir) {
+        case 'up':
+          dy = -30;
+          break;
+        case 'down':
+          dy = 30;
+          break;
+        case 'left':
+          dx = -30;
+          break;
+        case 'right':
+          dx = 30;
+          break;
+      }
+
+      var cp = map.tryLocationToPixel(map.getCenter());
+      cp.x += dx;
+      cp.y += dy;
+
+      map.setView({ center: map.tryPixelToLocation(cp) });
+      Microsoft.Maps.Events.addHandler(map, 'mouseover', displayEventInfo);
+
+    }
+
+    function pushpinClicked(e) {
+      //Make sure the infobox has metadata to display.
+      if (e.target.metadata) {
+        //Set the infobox options with the metadata of the pushpin.
+        infobox.setOptions({
+          location: e.target.getLocation(),
+          title: e.target.metadata.title,
+          description: e.target.metadata.description,
+          visible: true
+        });
+      }
+    }
+
+
+  </script>
+  <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlI6z2uTewaiW_N89aFotAzU1ulfodjerscAY4zA0j3HMOIbLvImCXv_K-WClvPO' async defer></script>
+</head>
+<body>
+<div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+<textarea id="textBox" style="width: 500px; height: 200px;">
+</textarea>
+
+</body>
+</html>
