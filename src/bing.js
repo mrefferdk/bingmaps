@@ -2,50 +2,154 @@ var coords = [];
 
 var map;
 
-function GetMap() {
-    map = new Microsoft.Maps.Map('#myMap', {
+
+let bingMapsSettings = {
+    settings: {
         allowHidingLabelsOfRoad: true,
         disableStreetside: true,
         maxZoom: 15,
         showDashboard: false,
         showTermsLink: false
-    });
+    },
+    view: {
+        zoomLevel: 1,
+        centerCoordinates: [54.91156356925669, 7.871542968749927],
+        showLabelOverlay: false,
+    },
+    polygonShapes: [
+        {
+            coordinates: [
+                [54.91156356925669, 7.871542968749927],
+                [54.49258645052386, 12.573691406249928],
+                [56.142689981038956, 12.617636718749928],
+                [57.45400999677476, 11.211386718749928],
+                [58.05669662238573, 10.552207031249928],
+                [57.07869565496171, 7.739707031249927],
+                [54.92938415752024, 7.959433593749927]
+            ]
+        }
+    ],
+    pins: [
+        {
+            coordinates: [11.029167, 79.849444],
+            title: 'Trankebar',
+            description: '1620-1845',
+            imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Fort_Dansborg.JPG/220px-Fort_Dansborg.JPG'
+        },
+        {
+            coordinates: [11.029167, 79.849444],
+            title: 'Trankebar',
+            description: '1620-1845',
+            imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Fort_Dansborg.JPG/220px-Fort_Dansborg.JPG'
+        },
+        {
+            coordinates: [5.916667, 0.983333],
+            title: 'Guldkysten',
+            description: '1658-1850',
+            imageSrc: ''
+        },
+        {
+            coordinates: [18.325, -64.835],
+            title: 'Dansk Vestindien',
+            description: '1672-1917',
+            imageSrc: ''
+        },
+        {
+            coordinates: [22.75, 88.34],
+            title: 'Serampore',
+            description: '1755-1845',
+            imageSrc: ''
+        },
+        {
+            coordinates: [7.083333, 93.8],
+            title: 'Nicobar Islands',
+            description: '',
+            imageSrc: ''
+        },
+        {
+            coordinates: [64.90347305862991, -18.122109375000072],
+            title: 'Island',
+            description: '1536/1814-1944',
+            imageSrc: '1756-1848/1868'
+        },
+        {
+            coordinates: [59.433333, 24.75],
+            title: 'Dansk Estonia',
+            description: '1206-1645',
+            imageSrc: null
+        },
+        {
+            coordinates: [57.2172, 21.7028],
+            title: 'Bishopric of Courland',
+            description: '1559-1585',
+            imageSrc: null
+        },
 
-    mapMethods(Microsoft, map).setView(1);
-    mapMethods(Microsoft, map).savePixelCoordinate();
-    var arr = [[54.91156356925669, 7.871542968749927],
+    ]
+}
+
+function GetMap() {
+    map = new Microsoft.Maps.Map('#myMap');
+
+    if (bingMapsSettings) {
+        if (bingMapsSettings.view) {
+            mapMethods(Microsoft, map).setView(bingMapsSettings.view.zoomLevel, bingMapsSettings.view.centerCoordinates, bingMapsSettings.view.showLabelOverlay)
+        }
+        if (bingMapsSettings.settings) {
+            map.setOptions(bingMapsSettings.settings);
+        }
+
+        if (bingMapsSettings.polygonShapes) {
+            console.log('shapes:', bingMapsSettings.polygonShapes);
+            for (shape of bingMapsSettings.polygonShapes) {
+                mapMethods(Microsoft, map).createPolygonShape(shape.coordinates);
+            }
+        }
+
+        if (bingMapsSettings.pins) {
+            for (pin of bingMapsSettings.pins) {
+                mapMethods(Microsoft, map).createPin(pin.coordinates, pin.title, pin.description, pin.imageSrc);
+            }
+        }
+    }
+
+
+}
+
+setTimeout(() => {
+    /*var arr = [[54.91156356925669, 7.871542968749927],
         [54.49258645052386, 12.573691406249928],
         [56.142689981038956, 12.617636718749928],
         [57.45400999677476, 11.211386718749928],
         [58.05669662238573, 10.552207031249928],
         [57.07869565496171, 7.739707031249927],
         [54.92938415752024, 7.959433593749927]
-    ];
-    mapMethods(Microsoft, map).createPolygonShape(arr);
-    //mapMethods(Microsoft, map).createPin([56.65436416004402, 12.683554687499928], 'test', 'beskrivelse');
-    //mapMethods(Microsoft, map).createPin([55.65436416004402, 12.683554687499928], 'test2', 'beskrivelse2');
-    mapMethods(Microsoft, map).createPin([11.029167, 79.849444], 'Trankebar', '1620-1845');
-    mapMethods(Microsoft, map).createPin([5.916667, 0.983333], 'Guldkysten', '1658-1850');
-    mapMethods(Microsoft, map).createPin([18.325, -64.835], 'Dansk Vestindien', '1672-1917');
-    mapMethods(Microsoft, map).createPin([22.75, 88.34], 'Serampore', '1755-1845');
-    mapMethods(Microsoft, map).createPin([7.083333, 93.8], 'Nicobar Islands', '1756-1848/1868');
-    mapMethods(Microsoft, map).createPin([64.90347305862991, -18.122109375000072], 'Island', '1536/1814-1944');
-    mapMethods(Microsoft, map).createPin([59.433333, 24.75], 'Dansk Estonia', '1206-1645');
-    mapMethods(Microsoft, map).createPin([57.2172, 21.7028], 'Bishopric of Courland', '1559-1585');
+    ];*/
 
-//Create an infobox at the center of the map but don't show it.
+
+
+    mapMethods(Microsoft, map).savePixelCoordinate();
+
+},4000);
+
+function mapMethods(Microsoft, map) {
+
+    /*map.setOptions({
+        allowHidingLabelsOfRoad: true,
+        disableStreetside: true,
+        maxZoom: 15,
+        showDashboard: false,
+        showTermsLink: false
+    });*/
+
+    //Create an infobox at the center of the map but don't show it.
     infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
-        visible: false
+        visible: false,
+
     });
 
     //Assign the infobox to a map instance.
     infobox.setMap(map);
-
-
-}
-
-
-function mapMethods(Microsoft, map) {
 
     function savePixelCoordinate() {
         Microsoft.Maps.Events.addHandler(map, 'click', pixelClickEvent);
@@ -68,12 +172,15 @@ function mapMethods(Microsoft, map) {
     }
 
 
-    function setView(zoomLevel) {
+
+
+    function setView(zoomLevel, centerCoordinates, showLabelOverlay) {
+        console.log("coords", centerCoordinates);
         map.setView({
-            //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-            center: new Microsoft.Maps.Location(55.55157899886038, 10.837851562499928),
+            //mapTypeId: Msicrosoft.Maps.MapTypeId.aerial,
+            center: new Microsoft.Maps.Location(centerCoordinates[0], centerCoordinates[1]),
             zoom: zoomLevel,
-            labelOverlay: Microsoft.Maps.LabelOverlay.hidden
+            labelOverlay: showLabelOverlay ? Microsoft.Maps.LabelOverlay.visible : Microsoft.Maps.LabelOverlay.hidden
         });
     }
 
@@ -95,7 +202,7 @@ function mapMethods(Microsoft, map) {
 
     }
 
-    function createPin(coordinate, title, text) {
+    function createPin(coordinate, title, text, imageSrc, link, linkText) {
         let location = new Microsoft.Maps.Location(coordinate[0], coordinate[1]);
         var pin = new Microsoft.Maps.Pushpin(location);
 
@@ -104,11 +211,26 @@ function mapMethods(Microsoft, map) {
             pin.metadata.title = title;
         }
         if (text) {
-            pin.metadata.description = text;
+            pin.metadata.description = "<div>" +
+                "<div class='description'>"+text+"</div>"
+                + (imageSrc ? "<img class='image' src='"+imageSrc+"'/>" : '') + "</div>";
         }
+
+        pin.metadata.imageSrc = imageSrc;
 
         if (title || text) {
             Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+        }
+
+        if (link && linkText) {
+            /*
+            actions: [
+        { label: 'Handler1', eventHandler: function () { alert('Handler1'); } },
+        { label: 'Handler2', eventHandler: function () { alert('Handler2'); } },
+        { label: 'Handler3', eventHandler: function () { alert('Handler3'); } }
+    ]
+             */
+
         }
 
         map.entities.push(pin);
@@ -155,6 +277,14 @@ function mapMethods(Microsoft, map) {
     }
 }
 
+let infoboxHtml = (title, description, imageSrc, link, linkText) => {
+    return "<div class='infoBox'>" +
+        "<div class='title'>"+title+"</div>" +
+        (imageSrc ? "<img class='image' src='"+imageSrc+"'/>" : '') +
+        "<div class='description'>"+description+"</div>" +
+        "</div>";
+};
+
 function pushpinClicked(e) {
     //Make sure the infobox has metadata to display.
     if (e.target.metadata) {
@@ -163,7 +293,10 @@ function pushpinClicked(e) {
             location: e.target.getLocation(),
             title: e.target.metadata.title,
             description: e.target.metadata.description,
-            visible: true
+            visible: true,
+            actions: [
+                { label: 'Handler1', eventHandler: function () { alert('Læs mere'); } },
+            ]
         });
     }
 }
