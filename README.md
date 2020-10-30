@@ -10,7 +10,7 @@
 </head>
 ```
 
-And in your <body> you add this:
+And within the `<body>`-tag you add this:
 ```
 <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
 ```
