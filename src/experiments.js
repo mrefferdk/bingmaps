@@ -152,6 +152,42 @@ function GetMap() {
     map.layers.insert(layer);
 
 
+    /**
+     * Overlay buttons
+     */
+
+    //Define a custom overlay class that inherits from the CustomOverlay class.
+    PanningOverlay.prototype = new Microsoft.Maps.CustomOverlay({beneathLabels: false});
+
+    //Define a constructor for the custom overlay class.
+    function PanningOverlay() {
+        this.panUpBtn = document.createElement('input');
+        this.panUpBtn.type = 'button';
+        this.panUpBtn.value = 'Enable/disable';
+        this.panUpBtn.onclick = function () {
+            polygon2.setOptions({visible: false});
+        };
+    }
+
+    //Implement the onAdd method to set up DOM elements, and use setHtmlElement to bind it with the overlay.
+    PanningOverlay.prototype.onAdd = function () {
+        //Create a div that will hold pan buttons.
+        var container = document.createElement('div');
+        container.appendChild(this.panUpBtn);
+
+        container.style.position = 'absolute';
+        container.style.top = '10px';
+        container.style.left = '10px';
+        this.setHtmlElement(container);
+    };
+
+    //Implement the new custom overlay class.
+    var overlay = new PanningOverlay();
+
+    //Add the custom overlay to the map.
+    //map.layers.insert(overlay);
+
+
     // save click coordinates
     mapMethods(Microsoft, map).savePixelCoordinate();
 }

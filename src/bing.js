@@ -6,7 +6,7 @@ function GetMap() {
     map = new Microsoft.Maps.Map('#myMap');
     if (bingMapsSettings) {
         if (bingMapsSettings.view) {
-            mapMethods(Microsoft, map).setView(bingMapsSettings.view.zoomLevel, bingMapsSettings.view.centerCoordinates, bingMapsSettings.view.showLabelOverlay)
+            bingUtil(Microsoft, map).setView(bingMapsSettings.view.zoomLevel, bingMapsSettings.view.centerCoordinates, bingMapsSettings.view.showLabelOverlay)
         }
         if (bingMapsSettings.settings) {
             map.setOptions(bingMapsSettings.settings);
@@ -15,13 +15,13 @@ function GetMap() {
         if (bingMapsSettings.polygonShapes) {
             console.log('shapes:', bingMapsSettings.polygonShapes);
             for (shape of bingMapsSettings.polygonShapes) {
-                mapMethods(Microsoft, map).createPolygonShape(shape.coordinates);
+                bingUtil(Microsoft, map).createPolygonShape(shape.coordinates);
             }
         }
 
         if (bingMapsSettings.pins) {
             for (pin of bingMapsSettings.pins) {
-                mapMethods(Microsoft, map).createPin(pin.coordinates, pin.title, pin.description, pin.imageSrc);
+                bingUtil(Microsoft, map).createPin(pin.coordinates, pin.title, pin.description, pin.imageSrc);
             }
         }
     }
@@ -29,8 +29,7 @@ function GetMap() {
 }
 
 
-
-function mapMethods(Microsoft, map) {
+function bingUtil(Microsoft, map) {
 
     //Create an infobox at the center of the map but don't show it.
     infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
@@ -46,12 +45,9 @@ function mapMethods(Microsoft, map) {
     }
 
     function pixelClickEvent(e) {
-        console.log('click eve');
         if (e.targetType == "map") {
             var point = new Microsoft.Maps.Point(e.getX(), e.getY());
             var loc = e.target.tryPixelToLocation(point);
-            //coords += 'new Microsoft.Maps.Location(' + loc.latitude
-            //        + ", " + loc.longitude + '),' + "\n";
             coords += '[' + loc.latitude
                 + ", " + loc.longitude + '],' + "\n";
 
@@ -62,12 +58,8 @@ function mapMethods(Microsoft, map) {
     }
 
 
-
-
     function setView(zoomLevel, centerCoordinates, showLabelOverlay) {
-        console.log("coords", centerCoordinates);
         map.setView({
-            //mapTypeId: Msicrosoft.Maps.MapTypeId.aerial,
             center: new Microsoft.Maps.Location(centerCoordinates[0], centerCoordinates[1]),
             zoom: zoomLevel,
             labelOverlay: showLabelOverlay ? Microsoft.Maps.LabelOverlay.visible : Microsoft.Maps.LabelOverlay.hidden
@@ -86,10 +78,7 @@ function mapMethods(Microsoft, map) {
             strokeThickness: 2
         });
 
-        //Add the polygon to map
         map.entities.push(polygon);
-        console.log(shape);
-
     }
 
     function createPin(coordinate, title, text, imageSrc, link, linkText) {
@@ -126,40 +115,9 @@ function mapMethods(Microsoft, map) {
         map.entities.push(pin);
 
         return pin;
-
     }
 
 
-    //Define a custom overlay class that inherts from the CustomOverlay class.
-    PanningOverlay.prototype = new Microsoft.Maps.CustomOverlay({beneathLabels: false});
-
-    //Define a constructor for the custom overlay class.
-    function PanningOverlay() {
-        this.panUpBtn = document.createElement('input');
-        this.panUpBtn.type = 'button';
-        this.panUpBtn.value = 'Enable/disable';
-        this.panUpBtn.onclick = function () {
-            polygon2.setOptions({visible: false});
-        };
-    }
-
-    //Implement the onAdd method to set up DOM elements, and use setHtmlElement to bind it with the overlay.
-    PanningOverlay.prototype.onAdd = function () {
-        //Create a div that will hold pan buttons.
-        var container = document.createElement('div');
-        container.appendChild(this.panUpBtn);
-
-        container.style.position = 'absolute';
-        container.style.top = '10px';
-        container.style.left = '10px';
-        this.setHtmlElement(container);
-    };
-
-    //Implement the new custom overlay class.
-    var overlay = new PanningOverlay();
-
-    //Add the custom overlay to the map.
-    //map.layers.insert(overlay);
 
     return {
         setView: setView,
