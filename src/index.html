@@ -3,12 +3,10 @@
 <head>
   <title></title>
   <meta charset="utf-8" />
-  <script type='text/javascript'>
+  <script type='text/javascript' src='experiments.js' async defer></script>
+  <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlI6z2uTewaiW_N89aFotAzU1ulfodjerscAY4zA0j3HMOIbLvImCXv_K-WClvPO' async defer></script>
 
 
-  </script>
-  <script type='text/javascript' src='bing.js'></script>
-  <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlI6z2uTewaiW_N89aFotAzU1ulfodjerscAY4zA0j3HMOIbLvImCXv_K-WClvPO'></script>
 </head>
 <body>
 <style>
@@ -19,9 +17,53 @@
 
   }
 </style>
+
+  <script type='text/javascript'>
+
+
+
+    let bingMapsSettings = {
+      settings: {
+        allowHidingLabelsOfRoad: true,
+        disableStreetside: true,
+        maxZoom: 15,
+        showDashboard: false,
+        showTermsLink: false
+      },
+      view: {
+        zoomLevel: 1,
+        centerCoordinates: [54.91156356925669, 7.871542968749927],
+        showLabelOverlay: false,
+      },
+      polygonShapes: [
+        {
+          coordinates: [
+            [54.91156356925669, 7.871542968749927],
+            [54.49258645052386, 12.573691406249928],
+            [56.142689981038956, 12.617636718749928],
+            [57.45400999677476, 11.211386718749928],
+            [58.05669662238573, 10.552207031249928],
+            [57.07869565496171, 7.739707031249927],
+            [54.92938415752024, 7.959433593749927]
+          ]
+        }
+      ],
+      pins: [
+        {
+          coordinates: [11.029167, 79.849444],
+          title: 'Trankebar',
+          description: '1620-1845',
+          imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Fort_Dansborg.JPG/220px-Fort_Dansborg.JPG'
+        }
+
+      ]
+    }
+
+</script>
+<h3>Different examples of what you can show on a map</h3>
 <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+
 <textarea id="textBox" style="width: 500px; height: 200px;">
 </textarea>
-
 </body>
 </html>

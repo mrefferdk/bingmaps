@@ -2,95 +2,8 @@ var coords = [];
 
 var map;
 
-
-let bingMapsSettings = {
-    settings: {
-        allowHidingLabelsOfRoad: true,
-        disableStreetside: true,
-        maxZoom: 15,
-        showDashboard: false,
-        showTermsLink: false
-    },
-    view: {
-        zoomLevel: 1,
-        centerCoordinates: [54.91156356925669, 7.871542968749927],
-        showLabelOverlay: false,
-    },
-    polygonShapes: [
-        {
-            coordinates: [
-                [54.91156356925669, 7.871542968749927],
-                [54.49258645052386, 12.573691406249928],
-                [56.142689981038956, 12.617636718749928],
-                [57.45400999677476, 11.211386718749928],
-                [58.05669662238573, 10.552207031249928],
-                [57.07869565496171, 7.739707031249927],
-                [54.92938415752024, 7.959433593749927]
-            ]
-        }
-    ],
-    pins: [
-        {
-            coordinates: [11.029167, 79.849444],
-            title: 'Trankebar',
-            description: '1620-1845',
-            imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Fort_Dansborg.JPG/220px-Fort_Dansborg.JPG'
-        },
-        {
-            coordinates: [11.029167, 79.849444],
-            title: 'Trankebar',
-            description: '1620-1845',
-            imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Fort_Dansborg.JPG/220px-Fort_Dansborg.JPG'
-        },
-        {
-            coordinates: [5.916667, 0.983333],
-            title: 'Guldkysten',
-            description: '1658-1850',
-            imageSrc: ''
-        },
-        {
-            coordinates: [18.325, -64.835],
-            title: 'Dansk Vestindien',
-            description: '1672-1917',
-            imageSrc: ''
-        },
-        {
-            coordinates: [22.75, 88.34],
-            title: 'Serampore',
-            description: '1755-1845',
-            imageSrc: ''
-        },
-        {
-            coordinates: [7.083333, 93.8],
-            title: 'Nicobar Islands',
-            description: '',
-            imageSrc: ''
-        },
-        {
-            coordinates: [64.90347305862991, -18.122109375000072],
-            title: 'Island',
-            description: '1536/1814-1944',
-            imageSrc: '1756-1848/1868'
-        },
-        {
-            coordinates: [59.433333, 24.75],
-            title: 'Dansk Estonia',
-            description: '1206-1645',
-            imageSrc: null
-        },
-        {
-            coordinates: [57.2172, 21.7028],
-            title: 'Bishopric of Courland',
-            description: '1559-1585',
-            imageSrc: null
-        },
-
-    ]
-}
-
 function GetMap() {
     map = new Microsoft.Maps.Map('#myMap');
-
     if (bingMapsSettings) {
         if (bingMapsSettings.view) {
             mapMethods(Microsoft, map).setView(bingMapsSettings.view.zoomLevel, bingMapsSettings.view.centerCoordinates, bingMapsSettings.view.showLabelOverlay)
@@ -113,34 +26,11 @@ function GetMap() {
         }
     }
 
-
 }
 
-setTimeout(() => {
-    /*var arr = [[54.91156356925669, 7.871542968749927],
-        [54.49258645052386, 12.573691406249928],
-        [56.142689981038956, 12.617636718749928],
-        [57.45400999677476, 11.211386718749928],
-        [58.05669662238573, 10.552207031249928],
-        [57.07869565496171, 7.739707031249927],
-        [54.92938415752024, 7.959433593749927]
-    ];*/
 
-
-
-    mapMethods(Microsoft, map).savePixelCoordinate();
-
-},4000);
 
 function mapMethods(Microsoft, map) {
-
-    /*map.setOptions({
-        allowHidingLabelsOfRoad: true,
-        disableStreetside: true,
-        maxZoom: 15,
-        showDashboard: false,
-        showTermsLink: false
-    });*/
 
     //Create an infobox at the center of the map but don't show it.
     infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
@@ -235,6 +125,8 @@ function mapMethods(Microsoft, map) {
 
         map.entities.push(pin);
 
+        return pin;
+
     }
 
 
@@ -293,10 +185,7 @@ function pushpinClicked(e) {
             location: e.target.getLocation(),
             title: e.target.metadata.title,
             description: e.target.metadata.description,
-            visible: true,
-            actions: [
-                { label: 'Handler1', eventHandler: function () { alert('Læs mere'); } },
-            ]
+            visible: true
         });
     }
 }
